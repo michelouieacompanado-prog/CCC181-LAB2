@@ -6,7 +6,7 @@
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
 
 > **Academic Submission:** Activity No. 2 — Creating CRUD Modules in Laravel  
-> **Course:** CCC181: Web Systems and Technologies  
+> **Course:** CCC181: Applications Development and Emerging Technologies  
 > **Architecture:** Model-View-Controller (MVC)
 
 ---
@@ -241,8 +241,8 @@ Ensures incoming data adheres to business logic before persistence, automaticall
 
 ## 👤 Author & Academic Details
 
-- **Student / Developer:** Computer Science Student
-- **Course:** CCC181 (Web Systems and Technologies)
+- **Student / Developer:** Computer Applications Student
+- **Course:** CCC181 (Applications Development and Emerging Technologies)
 - **Activity:** Activity No. 2 — Creating CRUD Modules in Laravel
 - **Term:** 1st Semester, A.Y. 2026–2027
 

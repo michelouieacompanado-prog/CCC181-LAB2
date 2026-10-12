@@ -112,16 +112,62 @@
             border-left: 4px solid #10b981;
         }
 
-        /* Footer */
-        .table-footer {
-            margin-top: 18px;
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            padding: 12px 24px;
+            border-radius: 10px;
+            max-width: 960px;
+            margin: 0 auto 24px auto;
+        }
+
+        .navbar-brand {
+            color: #f8fafc;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .navbar-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
             color: #94a3b8;
             font-size: 13px;
-            text-align: right;
         }
+
+        .btn-logout {
+            background-color: #475569;
+            color: #f8fafc;
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .btn-logout:hover { background-color: #ef4444; }
     </style>
 </head>
 <body>
+
+{{-- Top navbar: shows logged-in user and logout button --}}
+<nav class="navbar">
+    <span class="navbar-brand">🛒 CCC181 Product Manager</span>
+    <div class="navbar-user">
+        <span>Logged in as: <strong style="color:#f8fafc">{{ Auth::user()->name }}</strong></span>
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button type="submit" class="btn-logout">Logout</button>
+        </form>
+    </div>
+</nav>
+
 <div class="container">
     {{-- Show a flash message after create/update/delete --}}
     @if(session('success'))

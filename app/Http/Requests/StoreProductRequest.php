@@ -41,6 +41,7 @@ class StoreProductRequest extends FormRequest
             'description' => ['nullable', 'string'],
             'price'       => ['required', 'numeric', 'min:0'],
             'qty'         => ['required', 'integer', 'min:0'],
+            'image'       => ['nullable', 'file', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ];
     }
 
@@ -53,6 +54,7 @@ class StoreProductRequest extends FormRequest
             'name'  => 'product name',
             'qty'   => 'stock / quantity',
             'price' => 'price',
+            'image' => 'product image',
         ];
     }
 }

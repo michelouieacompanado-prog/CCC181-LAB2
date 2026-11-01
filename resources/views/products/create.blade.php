@@ -129,7 +129,7 @@
         </div>
     @endif
 
-    <form action="{{ route('products.store') }}" method="POST">
+    <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
         <div class="form-group">
@@ -160,6 +160,14 @@
             <label for="description">Description <span style="font-weight:normal;color:#94a3b8;">(optional)</span></label>
             <textarea id="description" name="description" placeholder="Short description..." class="@error('description') input-error @enderror">{{ old('description') }}</textarea>
             @error('description')
+                <span class="field-error">{{ $message }}</span>
+            @enderror
+        </div>
+
+        <div class="form-group">
+            <label for="image">Product Image <span style="font-weight:normal;color:#94a3b8;">(optional, max 2MB: JPG, PNG, WebP)</span></label>
+            <input type="file" id="image" name="image" accept=".jpg,.jpeg,.png,.webp" class="@error('image') input-error @enderror" style="padding: 7px;">
+            @error('image')
                 <span class="field-error">{{ $message }}</span>
             @enderror
         </div>

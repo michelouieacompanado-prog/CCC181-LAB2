@@ -183,6 +183,7 @@
         <thead>
             <tr>
                 <th>#</th>
+                <th>Image</th>
                 <th>Name</th>
                 <th>Qty</th>
                 <th>Price</th>
@@ -194,11 +195,23 @@
             @forelse($products as $product)
             <tr>
                 <td>{{ $product->id }}</td>
-                <td>{{ $product->name }}</td>
+                <td>
+                    @if($product->image)
+                        <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" style="width: 44px; height: 44px; object-fit: cover; border-radius: 6px; border: 1px solid #334155;">
+                    @else
+                        <div style="width: 44px; height: 44px; background-color: #0f172a; border: 1px dashed #334155; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 16px; color: #64748b;" title="No image">📷</div>
+                    @endif
+                </td>
+                <td>
+                    <a href="{{ route('products.show', $product->id) }}" style="color: #60a5fa; text-decoration: none; font-weight: 600;">{{ $product->name }}</a>
+                </td>
                 <td><span class="qty-badge">{{ $product->qty }}</span></td>
                 <td>₱{{ number_format($product->price, 2) }}</td>
                 <td>{{ $product->description ?? '—' }}</td>
                 <td>
+                    {{-- View button --}}
+                    <a href="{{ route('products.show', $product->id) }}" class="btn btn-gray" style="margin-right: 4px;">View</a>
+
                     {{-- Edit button --}}
                     <a href="{{ route('products.edit', $product->id) }}" class="btn btn-blue">Edit</a>
 
@@ -214,7 +227,7 @@
             </tr>
             @empty
             <tr>
-                <td colspan="6" style="text-align:center; color:#94a3b8; padding: 24px;">No products yet. Add one!</td>
+                <td colspan="7" style="text-align:center; color:#94a3b8; padding: 24px;">No products yet. Add one!</td>
             </tr>
             @endforelse
         </tbody>

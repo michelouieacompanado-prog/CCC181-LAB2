@@ -129,7 +129,7 @@
         </div>
     @endif
 
-    <form action="{{ route('products.update', $product->id) }}" method="POST">
+    <form action="{{ route('products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 
@@ -161,6 +161,23 @@
             <label for="description">Description <span style="font-weight:normal;color:#94a3b8;">(optional)</span></label>
             <textarea id="description" name="description" class="@error('description') input-error @enderror">{{ old('description', $product->description) }}</textarea>
             @error('description')
+                <span class="field-error">{{ $message }}</span>
+            @enderror
+        </div>
+
+        <div class="form-group">
+            <label for="image">Product Image <span style="font-weight:normal;color:#94a3b8;">(optional, max 2MB: JPG, PNG, WebP)</span></label>
+            @if($product->image)
+                <div style="margin-bottom: 10px; display: flex; align-items: center; gap: 14px; background-color: #0f172a; padding: 10px; border-radius: 8px; border: 1px solid #334155;">
+                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 6px; border: 1px solid #475569;">
+                    <div>
+                        <div style="font-size: 13px; color: #f8fafc; font-weight: 500;">Current Image</div>
+                        <div style="font-size: 12px; color: #94a3b8;">Upload a new image below to replace this file.</div>
+                    </div>
+                </div>
+            @endif
+            <input type="file" id="image" name="image" accept=".jpg,.jpeg,.png,.webp" class="@error('image') input-error @enderror" style="padding: 7px;">
+            @error('image')
                 <span class="field-error">{{ $message }}</span>
             @enderror
         </div>

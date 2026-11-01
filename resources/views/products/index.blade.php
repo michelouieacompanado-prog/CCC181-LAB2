@@ -165,6 +165,93 @@
         }
         .role-admin { background-color: #3b82f6; color: #ffffff; }
         .role-user  { background-color: #475569; color: #cbd5e1; }
+
+        /* Search bar */
+        .search-container {
+            margin-bottom: 20px;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 8px;
+            max-width: 460px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 9px 14px;
+            border: 1.5px solid #334155;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #f8fafc;
+            background-color: #0f172a;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        /* Pagination & footer */
+        .table-footer {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: #94a3b8;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .pagination-container nav {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .pagination-container svg {
+            width: 14px;
+            height: 14px;
+            display: inline-block;
+        }
+
+        .pagination-container a,
+        .pagination-container span[aria-current="page"] span,
+        .pagination-container span[aria-disabled="true"] span {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .pagination-container a {
+            background-color: #0f172a;
+            color: #f8fafc;
+            border: 1px solid #334155;
+        }
+
+        .pagination-container a:hover {
+            background-color: #334155;
+        }
+
+        .pagination-container span[aria-current="page"] span {
+            background-color: #3b82f6;
+            color: #ffffff;
+            border: 1px solid #3b82f6;
+            font-weight: 600;
+        }
+
+        .pagination-container span[aria-disabled="true"] span {
+            background-color: #0f172a;
+            color: #475569;
+            border: 1px solid #1e293b;
+        }
     </style>
 </head>
 <body>
@@ -196,6 +283,26 @@
         @can('create', App\Models\Product::class)
             <a href="{{ route('products.create') }}" class="btn btn-green">+ Add New Product</a>
         @endcan
+    </div>
+
+    {{-- Search Form: preserves query across pagination --}}
+    <div class="search-container">
+        <form action="{{ route('products.index') }}" method="GET" class="search-form">
+            <input type="text"
+                   name="search"
+                   value="{{ request('search') }}"
+                   placeholder="Search products by name..."
+                   class="search-input">
+            <button type="submit" class="btn btn-blue">Search</button>
+            @if(request('search'))
+                <a href="{{ route('products.index') }}" class="btn btn-gray">Clear</a>
+            @endif
+        </form>
+        @if(request('search'))
+            <p style="font-size: 13px; color: #94a3b8; margin-top: 8px;">
+                Showing results for: "<strong style="color: #f8fafc;">{{ request('search') }}</strong>"
+            </p>
+        @endif
     </div>
 
     <table>
@@ -250,14 +357,33 @@
             </tr>
             @empty
             <tr>
-                <td colspan="7" style="text-align:center; color:#94a3b8; padding: 24px;">No products yet. Add one!</td>
+                <td colspan="7" style="text-align:center; color:#94a3b8; padding: 32px 16px;">
+                    @if(request('search'))
+                        🔍 No products found matching "<strong>{{ request('search') }}</strong>".
+                        <div style="margin-top: 8px;">
+                            <a href="{{ route('products.index') }}" style="color: #60a5fa; text-decoration: underline;">Clear search filter</a>
+                        </div>
+                    @else
+                        No products available yet.
+                        @can('create', App\Models\Product::class)
+                            <div style="margin-top: 8px;">
+                                <a href="{{ route('products.create') }}" style="color: #34d399; text-decoration: underline;">Add your first product</a>
+                            </div>
+                        @endcan
+                    @endif
+                </td>
             </tr>
             @endforelse
         </tbody>
     </table>
 
     <div class="table-footer">
-        Total Products: {{ $products->count() }}
+        <div>
+            Showing {{ $products->firstItem() ?? 0 }} to {{ $products->lastItem() ?? 0 }} of {{ $products->total() }} products
+        </div>
+        <div class="pagination-container">
+            {{ $products->links() }}
+        </div>
     </div>
 </div>
 </body>

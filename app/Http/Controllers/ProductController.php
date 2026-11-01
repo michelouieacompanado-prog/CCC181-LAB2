@@ -11,14 +11,23 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
-    // Show all products
-    public function index()
+    // Show all products with database search and pagination
+    public function index(Request $request)
     {
         // Enforce viewAny policy check
         Gate::authorize('viewAny', Product::class);
 
-        $products = Product::all();
-        return view('products.index', compact('products'));
+        $search = $request->query('search');
+
+        // Database-level query filtering (WHERE name LIKE %...%)
+        $products = Product::when($search, function ($query, $search) {
+                return $query->where('name', 'LIKE', '%' . $search . '%');
+            })
+            ->latest()
+            ->paginate(8)
+            ->withQueryString();
+
+        return view('products.index', compact('products', 'search'));
     }
 
     // Show single product detail view

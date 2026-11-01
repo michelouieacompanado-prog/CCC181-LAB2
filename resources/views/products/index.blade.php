@@ -152,15 +152,32 @@
         }
 
         .btn-logout:hover { background-color: #ef4444; }
+
+        .role-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-left: 4px;
+        }
+        .role-admin { background-color: #3b82f6; color: #ffffff; }
+        .role-user  { background-color: #475569; color: #cbd5e1; }
     </style>
 </head>
 <body>
 
-{{-- Top navbar: shows logged-in user and logout button --}}
+{{-- Top navbar: shows logged-in user, their role, and logout button --}}
 <nav class="navbar">
     <span class="navbar-brand">🛒 CCC181 Product Manager</span>
     <div class="navbar-user">
-        <span>Logged in as: <strong style="color:#f8fafc">{{ Auth::user()->name }}</strong></span>
+        <span>Logged in as: <strong style="color:#f8fafc">{{ Auth::user()->name }}</strong>
+            <span class="role-badge {{ Auth::user()->role === 'admin' ? 'role-admin' : 'role-user' }}">
+                {{ Auth::user()->role }}
+            </span>
+        </span>
         <form action="{{ route('logout') }}" method="POST">
             @csrf
             <button type="submit" class="btn-logout">Logout</button>
@@ -176,7 +193,9 @@
 
     <div class="header-row">
         <h1>Product List</h1>
-        <a href="{{ route('products.create') }}" class="btn btn-green">+ Add New Product</a>
+        @can('create', App\Models\Product::class)
+            <a href="{{ route('products.create') }}" class="btn btn-green">+ Add New Product</a>
+        @endcan
     </div>
 
     <table>
@@ -209,20 +228,24 @@
                 <td>₱{{ number_format($product->price, 2) }}</td>
                 <td>{{ $product->description ?? '—' }}</td>
                 <td>
-                    {{-- View button --}}
+                    {{-- View button (available to all users) --}}
                     <a href="{{ route('products.show', $product->id) }}" class="btn btn-gray" style="margin-right: 4px;">View</a>
 
-                    {{-- Edit button --}}
-                    <a href="{{ route('products.edit', $product->id) }}" class="btn btn-blue">Edit</a>
+                    {{-- Edit button (admin only) --}}
+                    @can('update', $product)
+                        <a href="{{ route('products.edit', $product->id) }}" class="btn btn-blue">Edit</a>
+                    @endcan
 
-                    {{-- Delete form — uses POST + @method('DELETE') since HTML forms can't send DELETE --}}
-                    <form action="{{ route('products.destroy', $product->id) }}" method="POST"
-                          style="display:inline;"
-                          onsubmit="return confirm('Are you sure you want to delete this product?');">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-red">Delete</button>
-                    </form>
+                    {{-- Delete form (admin only) --}}
+                    @can('delete', $product)
+                        <form action="{{ route('products.destroy', $product->id) }}" method="POST"
+                              style="display:inline;"
+                              onsubmit="return confirm('Are you sure you want to delete this product?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-red">Delete</button>
+                        </form>
+                    @endcan
                 </td>
             </tr>
             @empty

@@ -14,16 +14,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Default User
-        User::firstOrCreate(
-            ['email' => 'michelouieacompanado@g.msuiit.edu.ph'],
-            [
-                'name' => 'Miche',
-                'password' => Hash::make('password123'),
-            ]
-        );
+        // 1. Seed the Administrator Account
+        $this->call(AdminUserSeeder::class);
 
-        // Product Catalog from Lab 2
+        // 2. Default Regular User (Student Account)
+        $user = User::firstOrNew(['email' => 'michelouieacompanado@g.msuiit.edu.ph']);
+        $user->name = 'Miche';
+        $user->password = Hash::make('password123');
+        $user->role = 'user';
+        $user->save();
+
+        // 3. Product Catalog from Lab 2
         $products = [
             [
                 'name' => 'apple',

@@ -6,6 +6,7 @@ use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
@@ -13,6 +14,9 @@ class ProductController extends Controller
     // Show all products
     public function index()
     {
+        // Enforce viewAny policy check
+        Gate::authorize('viewAny', Product::class);
+
         $products = Product::all();
         return view('products.index', compact('products'));
     }
@@ -21,18 +25,28 @@ class ProductController extends Controller
     public function show(string $id)
     {
         $product = Product::findOrFail($id);
+
+        // Enforce view policy check
+        Gate::authorize('view', $product);
+
         return view('products.show', compact('product'));
     }
 
     // Show the form to add a new product
     public function create()
     {
+        // Enforce create policy check (admin only)
+        Gate::authorize('create', Product::class);
+
         return view('products.create');
     }
 
     // Save a new product to the database
     public function store(StoreProductRequest $request)
     {
+        // Enforce create policy check (admin only)
+        Gate::authorize('create', Product::class);
+
         $data = $request->validated();
 
         // Handle optional product image upload on public disk
@@ -57,6 +71,10 @@ class ProductController extends Controller
     public function edit(string $id)
     {
         $product = Product::findOrFail($id);
+
+        // Enforce update policy check (admin only)
+        Gate::authorize('update', $product);
+
         return view('products.edit', compact('product'));
     }
 
@@ -64,6 +82,10 @@ class ProductController extends Controller
     public function update(UpdateProductRequest $request, string $id)
     {
         $product = Product::findOrFail($id);
+
+        // Enforce update policy check (admin only)
+        Gate::authorize('update', $product);
+
         $data = $request->validated();
 
         $oldImage = $product->image;
@@ -95,6 +117,10 @@ class ProductController extends Controller
     public function destroy(string $id)
     {
         $product = Product::findOrFail($id);
+
+        // Enforce delete policy check (admin only)
+        Gate::authorize('delete', $product);
+
         $imagePath = $product->image;
 
         $product->delete();

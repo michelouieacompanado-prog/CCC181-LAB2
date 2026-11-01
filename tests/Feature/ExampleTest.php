@@ -14,6 +14,7 @@ class ExampleTest extends TestCase
     {
         $response = $this->get('/');
 
-        $response->assertStatus(200);
+        // The root URL redirects all visitors to /products (auth middleware handles the rest)
+        $response->assertRedirect('/products');
     }
 }

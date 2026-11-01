@@ -31,11 +31,9 @@ class ProductController extends Controller
     }
 
     // Show single product detail view
-    public function show(string $id)
+    public function show(Product $product)
     {
-        $product = Product::findOrFail($id);
-
-        // Enforce view policy check
+        // Enforce view policy check (all authenticated users can view)
         Gate::authorize('view', $product);
 
         return view('products.show', compact('product'));
@@ -77,10 +75,8 @@ class ProductController extends Controller
     }
 
     // Show the form to edit an existing product
-    public function edit(string $id)
+    public function edit(Product $product)
     {
-        $product = Product::findOrFail($id);
-
         // Enforce update policy check (admin only)
         Gate::authorize('update', $product);
 
@@ -88,10 +84,8 @@ class ProductController extends Controller
     }
 
     // Save the updated product to the database
-    public function update(UpdateProductRequest $request, string $id)
+    public function update(UpdateProductRequest $request, Product $product)
     {
-        $product = Product::findOrFail($id);
-
         // Enforce update policy check (admin only)
         Gate::authorize('update', $product);
 
@@ -123,10 +117,8 @@ class ProductController extends Controller
     }
 
     // Delete a product from the database
-    public function destroy(string $id)
+    public function destroy(Product $product)
     {
-        $product = Product::findOrFail($id);
-
         // Enforce delete policy check (admin only)
         Gate::authorize('delete', $product);
 
@@ -142,3 +134,4 @@ class ProductController extends Controller
         return redirect()->route('products.index')->with('success', 'Product deleted successfully!');
     }
 }
+

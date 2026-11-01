@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -21,15 +23,17 @@ class ProductController extends Controller
     }
 
     // Save a new product to the database
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
-        $request->validate([
-            'name'  => 'required|string|max:255',
-            'qty'   => 'required|integer|min:0',
-            'price' => 'required|numeric|min:0',
-        ]);
+        // Server-side validated data from StoreProductRequest
+        $data = $request->validated();
 
-        Product::create($request->only('name', 'qty', 'price', 'description'));
+        Product::create([
+            'name'        => $data['name'],
+            'qty'         => $data['qty'],
+            'price'       => $data['price'],
+            'description' => $data['description'] ?? null,
+        ]);
 
         return redirect()->route('products.index')->with('success', 'Product added successfully!');
     }
@@ -42,16 +46,19 @@ class ProductController extends Controller
     }
 
     // Save the updated product to the database
-    public function update(Request $request, string $id)
+    public function update(UpdateProductRequest $request, string $id)
     {
-        $request->validate([
-            'name'  => 'required|string|max:255',
-            'qty'   => 'required|integer|min:0',
-            'price' => 'required|numeric|min:0',
-        ]);
-
         $product = Product::findOrFail($id);
-        $product->update($request->only('name', 'qty', 'price', 'description'));
+
+        // Server-side validated data from UpdateProductRequest
+        $data = $request->validated();
+
+        $product->update([
+            'name'        => $data['name'],
+            'qty'         => $data['qty'],
+            'price'       => $data['price'],
+            'description' => $data['description'] ?? null,
+        ]);
 
         return redirect()->route('products.index')->with('success', 'Product updated successfully!');
     }

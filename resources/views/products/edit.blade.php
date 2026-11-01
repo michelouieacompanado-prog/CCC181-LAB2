@@ -97,7 +97,19 @@
             padding: 10px 14px;
             border-radius: 6px;
             font-size: 13px;
-            margin-bottom: 6px;
+            margin-bottom: 14px;
+        }
+
+        .field-error {
+            color: #f87171;
+            font-size: 12px;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .input-error {
+            border-color: #ef4444 !important;
+            box-shadow: 0 0 0 1px #ef4444 !important;
         }
     </style>
 </head>
@@ -105,37 +117,52 @@
 <div class="container">
     <h1>Edit Product</h1>
 
-    {{-- Show validation errors if any --}}
+    {{-- Show validation errors banner if any --}}
     @if($errors->any())
-        @foreach($errors->all() as $error)
-            <div class="error">• {{ $error }}</div>
-        @endforeach
-        <br>
+        <div class="error">
+            <strong>Please correct the following errors:</strong>
+            <ul style="margin-left: 18px; margin-top: 6px;">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
     @endif
 
-    {{-- @method('PUT') tells Laravel this form should be treated as a PUT request --}}
     <form action="{{ route('products.update', $product->id) }}" method="POST">
         @csrf
         @method('PUT')
 
         <div class="form-group">
-            <label for="name">Product Name</label>
-            <input type="text" id="name" name="name" value="{{ old('name', $product->name) }}">
+            <label for="name">Product Name <span style="color:#ef4444;">*</span></label>
+            <input type="text" id="name" name="name" value="{{ old('name', $product->name) }}" class="@error('name') input-error @enderror">
+            @error('name')
+                <span class="field-error">{{ $message }}</span>
+            @enderror
         </div>
 
         <div class="form-group">
-            <label for="qty">Quantity</label>
-            <input type="number" id="qty" name="qty" value="{{ old('qty', $product->qty) }}" min="0">
+            <label for="qty">Quantity / Stock <span style="color:#ef4444;">*</span></label>
+            <input type="number" id="qty" name="qty" value="{{ old('qty', old('stock', $product->qty)) }}" min="0" class="@error('qty') input-error @enderror">
+            @error('qty')
+                <span class="field-error">{{ $message }}</span>
+            @enderror
         </div>
 
         <div class="form-group">
-            <label for="price">Price</label>
-            <input type="number" id="price" name="price" value="{{ old('price', $product->price) }}" step="0.01" min="0">
+            <label for="price">Price (₱) <span style="color:#ef4444;">*</span></label>
+            <input type="number" id="price" name="price" value="{{ old('price', $product->price) }}" step="0.01" min="0" class="@error('price') input-error @enderror">
+            @error('price')
+                <span class="field-error">{{ $message }}</span>
+            @enderror
         </div>
 
         <div class="form-group">
             <label for="description">Description <span style="font-weight:normal;color:#94a3b8;">(optional)</span></label>
-            <textarea id="description" name="description">{{ old('description', $product->description) }}</textarea>
+            <textarea id="description" name="description" class="@error('description') input-error @enderror">{{ old('description', $product->description) }}</textarea>
+            @error('description')
+                <span class="field-error">{{ $message }}</span>
+            @enderror
         </div>
 
         <button type="submit" class="btn btn-blue">Update Product</button>

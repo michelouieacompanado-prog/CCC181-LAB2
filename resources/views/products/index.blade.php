@@ -21,7 +21,7 @@
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-            max-width: 960px;
+            max-width: 1040px;
             margin: 0 auto;
         }
 
@@ -101,6 +101,21 @@
         .btn-red   { background-color: #ef4444; color: #ffffff; }
         .btn-red:hover   { background-color: #dc2626; }
 
+        .btn-gray  { background-color: #475569; color: #ffffff; }
+        .btn-gray:hover  { background-color: #334155; }
+
+        .action-buttons {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .action-buttons form {
+            display: inline-flex;
+            margin: 0;
+        }
+
         /* Flash message */
         .alert-success {
             background-color: #064e3b;
@@ -121,7 +136,7 @@
             border: 1px solid #334155;
             padding: 12px 24px;
             border-radius: 10px;
-            max-width: 960px;
+            max-width: 1040px;
             margin: 0 auto 24px auto;
         }
 
@@ -334,25 +349,26 @@
                 <td><span class="qty-badge">{{ $product->qty }}</span></td>
                 <td>₱{{ number_format($product->price, 2) }}</td>
                 <td>{{ $product->description ?? '—' }}</td>
-                <td>
-                    {{-- View button (available to all users) --}}
-                    <a href="{{ route('products.show', $product->id) }}" class="btn btn-gray" style="margin-right: 4px;">View</a>
+                <td style="white-space: nowrap;">
+                    <div class="action-buttons">
+                        {{-- View button (available to all users) --}}
+                        <a href="{{ route('products.show', $product->id) }}" class="btn btn-gray">View</a>
 
-                    {{-- Edit button (admin only) --}}
-                    @can('update', $product)
-                        <a href="{{ route('products.edit', $product->id) }}" class="btn btn-blue">Edit</a>
-                    @endcan
+                        {{-- Edit button (admin only) --}}
+                        @can('update', $product)
+                            <a href="{{ route('products.edit', $product->id) }}" class="btn btn-blue">Edit</a>
+                        @endcan
 
-                    {{-- Delete form (admin only) --}}
-                    @can('delete', $product)
-                        <form action="{{ route('products.destroy', $product->id) }}" method="POST"
-                              style="display:inline;"
-                              onsubmit="return confirm('Are you sure you want to delete this product?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-red">Delete</button>
-                        </form>
-                    @endcan
+                        {{-- Delete form (admin only) --}}
+                        @can('delete', $product)
+                            <form action="{{ route('products.destroy', $product->id) }}" method="POST"
+                                  onsubmit="return confirm('Are you sure you want to delete this product?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-red">Delete</button>
+                            </form>
+                        @endcan
+                    </div>
                 </td>
             </tr>
             @empty

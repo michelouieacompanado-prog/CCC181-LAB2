@@ -168,12 +168,18 @@
         <div class="form-group">
             <label for="image">Product Image <span style="font-weight:normal;color:#94a3b8;">(optional, max 2MB: JPG, PNG, WebP)</span></label>
             @if($product->image)
-                <div style="margin-bottom: 10px; display: flex; align-items: center; gap: 14px; background-color: #0f172a; padding: 10px; border-radius: 8px; border: 1px solid #334155;">
-                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 6px; border: 1px solid #475569;">
-                    <div>
-                        <div style="font-size: 13px; color: #f8fafc; font-weight: 500;">Current Image</div>
-                        <div style="font-size: 12px; color: #94a3b8;">Upload a new image below to replace this file.</div>
+                <div style="margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; gap: 14px; background-color: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid #334155; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" style="width: 56px; height: 56px; object-fit: cover; border-radius: 6px; border: 1px solid #475569;">
+                        <div>
+                            <div style="font-size: 13px; color: #f8fafc; font-weight: 500;">Current Image</div>
+                            <div style="font-size: 12px; color: #94a3b8;">Upload a new image below to replace it.</div>
+                        </div>
                     </div>
+                    <label style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: #f87171; cursor: pointer; margin: 0; font-weight: 500; background: rgba(239, 68, 68, 0.12); padding: 7px 12px; border-radius: 6px; border: 1px solid rgba(239, 68, 68, 0.35); user-select: none;">
+                        <input type="checkbox" name="remove_image" value="1" style="cursor: pointer; width: 16px; height: 16px; accent-color: #ef4444;">
+                        Remove current image
+                    </label>
                 </div>
             @endif
             <input type="file" id="image" name="image" accept=".jpg,.jpeg,.png,.webp" class="@error('image') input-error @enderror" style="padding: 7px;">

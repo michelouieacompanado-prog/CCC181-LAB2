@@ -188,6 +188,34 @@ class ProductTest extends TestCase
         Storage::disk('public')->assertExists($oldPath);
     }
 
+    /** TC-16: Admin can remove an existing image on update by checking remove_image. */
+    public function test_admin_can_remove_product_image_on_update(): void
+    {
+        Storage::fake('public');
+        $admin = $this->admin();
+
+        // Create a product with an image
+        $image = $this->fakeJpeg('remove-me.jpg');
+        $this->actingAs($admin)->post(route('products.store'), array_merge(
+            $this->validPayload(),
+            ['image' => $image]
+        ));
+
+        $product = Product::first();
+        $storedPath = $product->image;
+        Storage::disk('public')->assertExists($storedPath);
+
+        // Update with remove_image = true
+        $this->actingAs($admin)->put(route('products.update', $product->id), array_merge(
+            $this->validPayload(),
+            ['remove_image' => '1']
+        ));
+
+        $product->refresh();
+        $this->assertNull($product->image);
+        Storage::disk('public')->assertMissing($storedPath);
+    }
+
     // ──────────────────────────────────────────────────────────────
     // TASK 3 — ROLE-BASED AUTHORIZATION
     // ──────────────────────────────────────────────────────────────

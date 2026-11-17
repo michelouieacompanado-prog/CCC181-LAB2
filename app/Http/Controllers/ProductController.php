@@ -94,7 +94,12 @@ class ProductController extends Controller
         $oldImage = $product->image;
         $imagePath = $oldImage;
 
-        // If a new image is uploaded: store the new file first
+        // If the user wants to remove the image completely
+        if ($request->boolean('remove_image')) {
+            $imagePath = null;
+        }
+
+        // If a new image is uploaded: store the new file first (overrides remove_image)
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('products', 'public');
         }
@@ -108,8 +113,8 @@ class ProductController extends Controller
             'image'       => $imagePath,
         ]);
 
-        // Delete old image only after new image is successfully stored and DB updated
-        if ($request->hasFile('image') && $oldImage && $oldImage !== $imagePath) {
+        // Delete old image only after new image is successfully stored (or removed) and DB updated
+        if ($oldImage && $oldImage !== $imagePath) {
             Storage::disk('public')->delete($oldImage);
         }
 
